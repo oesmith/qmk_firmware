@@ -36,7 +36,7 @@ enum layer_number {
  * |      |      |      |      |      |      |                    |      |      |      |      |      |      |
  * |------+------+------+------+------+------|                    |------+------+------+------+------+------|
  * |      |      |      |      |      |      |-------.    ,-------| Left | Down |  Up  |Right |      |      |
- * |------+------+------+------+------+------|PrintSc|    | Pause |------+------+------+------+------+------|
+ * |------+------+------+------+------+------|PrintSc|    | Lock  |------+------+------+------+------+------|
  * |      |      |      |      |      |      |-------|    |-------|      |      |      |      |      |      |
  * `-----------------------------------------/       /     \      \-----------------------------------------'
  *                   |      |      |      | /       /       \      \  |      |      |      |
@@ -47,7 +47,7 @@ enum layer_number {
   KC_ESC,  KC_F1,   KC_F2,   KC_F3,   KC_F4,   KC_F5,                                  KC_F6,   KC_F7,   KC_F8,   KC_F9,   KC_F10,  KC_DEL,  \
   _______, _______, _______, _______, _______, _______,                                _______, _______, _______, _______, _______, _______, \
   _______, _______, _______, _______, _______, _______,                                KC_LEFT, KC_DOWN, KC_UP,   KC_RGHT, XXXXXXX, XXXXXXX, \
-  _______, RGB_TOG, RGB_MOD, _______, _______, _______, LGUI(KC_PSCR), SGUI(KC_PAUSE), _______, _______, _______, _______, _______, _______, \
+  _______, RGB_TOG, RGB_MOD, _______, _______, _______, LGUI(KC_PSCR), LGUI(KC_PAUSE), _______, _______, _______, _______, _______, _______, \
                              _______, _______, _______, _______,       _______,        _______, _______, _______\
 )
 
@@ -66,11 +66,11 @@ enum layer_number {
  *                   `----------------------------'           '------''--------------------'
  */
 #define MY_ADJUST_MAP LAYOUT( \
-  _______, KC_F11,  KC_F12,  KC_F13,  KC_F14,  KC_F15,                    KC_F16,  KC_F17,  KC_F18,  KC_F19,  KC_F20,  _______, \
-  _______, _______, _______, _______, _______, _______,                   _______, _______, _______, _______, _______, _______, \
-  _______, _______, _______, _______, _______, _______,                   KC_HOME, KC_PGDN, KC_PGUP, KC_END,  XXXXXXX, XXXXXXX, \
-  _______, _______, _______, _______, _______, _______, _______, KC_SLEP, _______, _______, _______, _______, _______, _______, \
-                             _______, _______, _______, _______, _______, _______, _______, _______\
+  _______, KC_F11,  KC_F12,  KC_F13,  KC_F14,  KC_F15,                           KC_F16,  KC_F17,  KC_F18,  KC_F19,  KC_F20,  _______, \
+  _______, _______, _______, _______, _______, _______,                          _______, _______, _______, _______, _______, _______, \
+  _______, _______, _______, _______, _______, _______,                          KC_HOME, KC_PGDN, KC_PGUP, KC_END,  XXXXXXX, XXXXXXX, \
+  _______, _______, _______, _______, _______, _______, _______, SGUI(KC_PAUSE), _______, _______, _______, _______, _______, _______, \
+                             _______, _______, _______, _______, _______,        _______, _______, _______\
 )
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
@@ -99,26 +99,17 @@ layer_state_t layer_state_set_user(layer_state_t state) {
 //SSD1306 OLED update loop, make sure to enable OLED_DRIVER_ENABLE=yes in rules.mk
 #ifdef OLED_DRIVER_ENABLE
 
-const char *read_logo(void);
 void render_bongo_cat(void);
 
 oled_rotation_t oled_init_user(oled_rotation_t rotation) {
-  if (is_keyboard_master()) {
-    return OLED_ROTATION_0;
-  } else {
-    return OLED_ROTATION_180;  // flips the display 180 degrees if offhand
-  }
+  return OLED_ROTATION_180;
 }
 
 void oled_task_user(void) {
-  if (is_keyboard_master()) {
-    oled_write(read_logo(), false);
-  } else {
-    render_bongo_cat();
-  }
+  render_bongo_cat();
 }
 
 void suspend_power_down_user(void) {
-    oled_off();
+  oled_off();
 }
 #endif // OLED_DRIVER_ENABLE
