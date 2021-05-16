@@ -3,9 +3,9 @@
 enum layer_number {
   _QWERTY = 0,
   _LOWER,
+  _RAISE,
+  _ADJUST,
 };
-
-const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 /* QWERTY
  * ,-----------------------------------------.                    ,-----------------------------------------.
@@ -17,40 +17,84 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * |------+------+------+------+------+------|   [   |    |    ]  |------+------+------+------+------+------|
  * |LShift|   Z  |   X  |   C  |   V  |   B  |-------|    |-------|   N  |   M  |   ,  |   .  |  /   |RShift|
  * `-----------------------------------------/       /     \      \-----------------------------------------'
- *                   | LGUI | LAlt | LOWER| / Space /       \Enter \ |LOWER |  -   |  =   |
+ *                   | LGUI | LAlt | LOWER| / Space /       \Enter \ |RAISE |  -   |  =   |
  *                   |      |      |      |/       /         \      \|      |      |      |
  *                   `----------------------------'           '------'--------------------'
  */
-
- [_QWERTY] = LAYOUT( \
+#define MY_QWERTY_MAP LAYOUT( \
   KC_GRV,   KC_1,    KC_2,    KC_3,    KC_4,    KC_5,                   KC_6,    KC_7,    KC_8,    KC_9,    KC_0,    KC_BSPC, \
   KC_TAB,   KC_Q,    KC_W,    KC_E,    KC_R,    KC_T,                   KC_Y,    KC_U,    KC_I,    KC_O,    KC_P,    KC_BSLS, \
   KC_LCTL,  KC_A,    KC_S,    KC_D,    KC_F,    KC_G,                   KC_H,    KC_J,    KC_K,    KC_L,    KC_SCLN, KC_QUOT, \
   KC_LSFT,  KC_Z,    KC_X,    KC_C,    KC_V,    KC_B, KC_LBRC, KC_RBRC, KC_N,    KC_M,    KC_COMM, KC_DOT,  KC_SLSH, KC_RSFT, \
-                        KC_LGUI, KC_LALT, MO(_LOWER), KC_SPC,  KC_ENT,  MO(_LOWER), KC_MINS, KC_EQL \
-),
-/* LOWER
+                        KC_LGUI, KC_LALT, MO(_LOWER), KC_SPC,  KC_ENT,  MO(_RAISE), KC_MINS, KC_EQL \
+)
+
+/* LOWER / RAISE
  * ,-----------------------------------------.                    ,-----------------------------------------.
- * | Esc  |      |      |      |      |      |                    |      |      |      |  -   |  =   | Del  |
+ * | Esc  |  F1  |  F2  |  F3  |  F4  |  F5  |                    |  F6  |  F7  |  F8  |  F9  |  F10 | Del  |
  * |------+------+------+------+------+------|                    |------+------+------+------+------+------|
- * |  F1  |  F2  |  F3  |  F4  |  F5  |  F6  |                    |  F7  |  F8  |  F9  | F10  | F11  | F12  |
+ * |      |      |      |      |      |      |                    |      |      |      |      |      |      |
  * |------+------+------+------+------+------|                    |------+------+------+------+------+------|
  * |      |      |      |      |      |      |-------.    ,-------| Left | Down |  Up  |Right |      |      |
- * |------+------+------+------+------+------|PrintSc|    |PrintRg|------+------+------+------+------+------|
- * |      |      |      |      |      |      |-------|    |-------| Home | PgDn | PgDn | End  |      |      |
+ * |------+------+------+------+------+------|PrintSc|    | Pause |------+------+------+------+------+------|
+ * |      |      |      |      |      |      |-------|    |-------|      |      |      |      |      |      |
  * `-----------------------------------------/       /     \      \-----------------------------------------'
- *                   |      |      |      | /Space  /       \Enter \  |      |      |      |
+ *                   |      |      |      | /       /       \      \  |      |      |      |
  *                   |      |      |      |/       /         \      \ |      |      |      |
  *                   `----------------------------'           '------''--------------------'
  */
-[_LOWER] = LAYOUT( \
-  KC_ESC,  _______, _______, _______, _______, _______,                               _______, _______, _______, KC_MINS, KC_EQL,  KC_DEL,  \
-  KC_F1,   KC_F2,   KC_F3,   KC_F4,   KC_F5,   KC_F6,                                 KC_F7,   KC_F8,   KC_F9,   KC_F10,  KC_F11,  KC_F12, \
-  _______, _______, _______, _______, _______, _______,                               KC_LEFT, KC_DOWN, KC_UP,   KC_RGHT, XXXXXXX, XXXXXXX, \
-  _______, _______, _______, _______, _______, _______, LGUI(KC_PSCR), SGUI(KC_PSCR), KC_HOME, KC_PGDN, KC_PGUP, KC_END,  XXXXXXX, XXXXXXX, \
-                             _______, _______, _______, _______,       _______,       _______, _______, _______\
-),
+#define MY_LOWER_RAISE_MAP LAYOUT( \
+  KC_ESC,  KC_F1,   KC_F2,   KC_F3,   KC_F4,   KC_F5,                                  KC_F6,   KC_F7,   KC_F8,   KC_F9,   KC_F10,  KC_DEL,  \
+  _______, _______, _______, _______, _______, _______,                                _______, _______, _______, _______, _______, _______, \
+  _______, _______, _______, _______, _______, _______,                                KC_LEFT, KC_DOWN, KC_UP,   KC_RGHT, XXXXXXX, XXXXXXX, \
+  _______, RGB_TOG, RGB_MOD, _______, _______, _______, LGUI(KC_PSCR), SGUI(KC_PAUSE), _______, _______, _______, _______, _______, _______, \
+                             _______, _______, _______, _______,       _______,        _______, _______, _______\
+)
+
+/* ADJUST
+ * ,-----------------------------------------.                    ,-----------------------------------------.
+ * |      |  F11 |  F12 |  F13 |  F14 |  F15 |                    | F16  | F17  | F18  | F19  | F20  |      |
+ * |------+------+------+------+------+------|                    |------+------+------+------+------+------|
+ * |      |      |      |      |      |      |                    |      |      |      |      |      |      |
+ * |------+------+------+------+------+------|                    |------+------+------+------+------+------|
+ * |      |      |      |      |      |      |-------.    ,-------| Home | PgDn | PgUp |  End |      |      |
+ * |------+------+------+------+------+------|       |    | Sleep |------+------+------+------+------+------|
+ * |      |      |      |      |      |      |-------|    |-------|      |      |      |      |      |      |
+ * `-----------------------------------------/       /     \      \-----------------------------------------'
+ *                   |      |      |      | /       /       \      \  |      |      |      |
+ *                   |      |      |      |/       /         \      \ |      |      |      |
+ *                   `----------------------------'           '------''--------------------'
+ */
+#define MY_ADJUST_MAP LAYOUT( \
+  _______, KC_F11,  KC_F12,  KC_F13,  KC_F14,  KC_F15,                    KC_F16,  KC_F17,  KC_F18,  KC_F19,  KC_F20,  _______, \
+  _______, _______, _______, _______, _______, _______,                   _______, _______, _______, _______, _______, _______, \
+  _______, _______, _______, _______, _______, _______,                   KC_HOME, KC_PGDN, KC_PGUP, KC_END,  XXXXXXX, XXXXXXX, \
+  _______, _______, _______, _______, _______, _______, _______, KC_SLEP, _______, _______, _______, _______, _______, _______, \
+                             _______, _______, _______, _______, _______, _______, _______, _______\
+)
+
+const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
+  [_QWERTY] = MY_QWERTY_MAP,
+  [_LOWER] = MY_LOWER_RAISE_MAP,
+  [_RAISE] = MY_LOWER_RAISE_MAP,
+  [_ADJUST] = MY_ADJUST_MAP
 };
+
+const rgblight_segment_t PROGMEM my_lower_rgb_layer[] = RGBLIGHT_LAYER_SEGMENTS({0, 12, HSV_YELLOW});
+const rgblight_segment_t PROGMEM my_adjust_rgb_layer[] = RGBLIGHT_LAYER_SEGMENTS({0, 12, HSV_RED});
+const rgblight_segment_t* const PROGMEM my_rgb_layers[] = RGBLIGHT_LAYERS_LIST(my_lower_rgb_layer, my_adjust_rgb_layer);
+
+void keyboard_post_init_user(void) {
+  // Enable the LED layers
+  rgblight_layers = my_rgb_layers;
+}
+
+layer_state_t layer_state_set_user(layer_state_t state) {
+  state = update_tri_layer_state(state, _LOWER, _RAISE, _ADJUST);
+  rgblight_set_layer_state(0, layer_state_cmp(state, _LOWER) || layer_state_cmp(state, _RAISE));
+  rgblight_set_layer_state(1, layer_state_cmp(state, _ADJUST));
+  return state;
+}
 
 //SSD1306 OLED update loop, make sure to enable OLED_DRIVER_ENABLE=yes in rules.mk
 #ifdef OLED_DRIVER_ENABLE
@@ -59,16 +103,22 @@ const char *read_logo(void);
 void render_bongo_cat(void);
 
 oled_rotation_t oled_init_user(oled_rotation_t rotation) {
-  if (!is_keyboard_master())
+  if (is_keyboard_master()) {
+    return OLED_ROTATION_0;
+  } else {
     return OLED_ROTATION_180;  // flips the display 180 degrees if offhand
-  return rotation;
+  }
 }
 
 void oled_task_user(void) {
   if (is_keyboard_master()) {
-    oled_write_ln(read_logo(), false);
+    oled_write(read_logo(), false);
   } else {
     render_bongo_cat();
   }
+}
+
+void suspend_power_down_user(void) {
+    oled_off();
 }
 #endif // OLED_DRIVER_ENABLE
