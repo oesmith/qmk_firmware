@@ -24,6 +24,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #define MASTER_LEFT
 
+#define OLED_TIMEOUT 15000
+
 // Underglow
 #undef RGBLED_NUM
 #define RGBLED_NUM 12    // Number of LEDs
