@@ -29,14 +29,16 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // Underglow
 #undef RGBLED_NUM
 #define RGBLED_NUM 12    // Number of LEDs
+#define RGBLIGHT_EFFECT_RAINBOW_MOOD
 #define RGBLIGHT_EFFECT_RAINBOW_SWIRL
+#define RGBLIGHT_EFFECT_KNIGHT
 #define RGBLIGHT_SPLIT
 #define RGBLED_SPLIT { 6, 6 }
 #define RGBLIGHT_LED_MAP { 5, 4, 3, 2, 1, 0, 6, 7, 8, 9, 10, 11 }
 #define RGBLIGHT_LIMIT_VAL 200
 #define RGBLIGHT_HUE_STEP 10
-#define RGBLIGHT_SAT_STEP 17
-#define RGBLIGHT_VAL_STEP 17
+#define RGBLIGHT_SAT_STEP 16
+#define RGBLIGHT_VAL_STEP 16
 #define RGBW
 #define RGBLIGHT_LAYERS
 #define RGBLIGHT_SLEEP
