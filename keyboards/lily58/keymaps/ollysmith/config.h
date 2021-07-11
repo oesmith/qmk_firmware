@@ -25,13 +25,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define MASTER_LEFT
 
 #define OLED_TIMEOUT 15000
+#undef OLED_FONT_H
+#define OLED_FONT_H "keyboards/lily58/keymaps/ollysmith/font.c"
+#define OLED_FONT_END 223
 
 // Underglow
 #undef RGBLED_NUM
 #define RGBLED_NUM 12    // Number of LEDs
-#define RGBLIGHT_EFFECT_RAINBOW_MOOD
 #define RGBLIGHT_EFFECT_RAINBOW_SWIRL
-#define RGBLIGHT_EFFECT_KNIGHT
 #define RGBLIGHT_SPLIT
 #define RGBLED_SPLIT { 6, 6 }
 #define RGBLIGHT_LED_MAP { 5, 4, 3, 2, 1, 0, 6, 7, 8, 9, 10, 11 }
