@@ -39,9 +39,7 @@ uint8_t get_mode(void) {
 }
 
 void set_mode(uint8_t mode, bool save) {
-    if (mode == get_mode()) {
-        return;
-    }
+    dprintf("set_mode - mode: %d, save: %s\n", mode, save ? "true" : "false");
     switch_mode(mode);
 
     if (mode > 7) {
@@ -77,13 +75,13 @@ void switch_mode(uint8_t mode) {
 #ifdef UNICODEMAP_ENABLE
     switch (mode) {
         case MAC_UNI:
-            set_unicode_input_mode(UC_MAC);
+            set_unicode_input_mode(UNICODE_MODE_MACOS);
             break;
         case WINDOWS_UNI:
-            set_unicode_input_mode(UC_WINC);
+            set_unicode_input_mode(UNICODE_MODE_WINCOMPOSE);
             break;
         case LINUX_UNI:
-            set_unicode_input_mode(UC_LNX);
+            set_unicode_input_mode(UNICODE_MODE_LINUX);
             break;
     }
 #endif
@@ -391,6 +389,35 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             if (is_unicode(mode)) {
                 send_unicode_string("³");
             }
+            return false;
+        // vim equal split
+        case RV_SEQU:
+            tap_code16(C(KC_W));
+            tap_code(KC_EQL);
+            return false;
+        // vim vertical split increase
+        case RV_VINC:
+            tap_code16(C(KC_W));
+            tap_code(KC_4);
+            tap_code16(S(KC_DOT));
+            return false;
+        // vim vertical split decrease
+        case RV_VDEC:
+            tap_code16(C(KC_W));
+            tap_code(KC_4);
+            tap_code16(S(KC_COMM));
+            return false;
+        // vim split increase
+        case RV_SINC:
+            tap_code16(C(KC_W));
+            tap_code(KC_4);
+            tap_code16(S(KC_EQL));
+            return false;
+        // vim split decrease
+        case RV_SDEC:
+            tap_code16(C(KC_W));
+            tap_code(KC_4);
+            tap_code(KC_MINS);
             return false;
     }
 
