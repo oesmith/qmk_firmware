@@ -23,14 +23,14 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     KC_ESC,  KC_F1,   KC_F2,   KC_F3,   KC_F4,   KC_F5,                     KC_F6,   KC_F7,   KC_F8,   KC_F9,   KC_F10,  KC_DEL,  \
     _______, _______, _______, _______, _______, _______,                   _______, _______, _______, _______, _______, _______, \
     _______, _______, _______, _______, _______, _______,                   KC_LEFT, KC_DOWN, KC_UP,   KC_RGHT, _______, _______, \
-    _______, _______, _______, _______, _______, _______, _______, _______, _______, KC_MINS, KC_EQL,  KC_LBRC, KC_RBRC, _______, \
+    _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, \
                                _______, _______, _______, _______, _______, _______, _______, _______\
   ),
   [_RAISE] = LAYOUT( \
     KC_ESC,  KC_F1,   KC_F2,   KC_F3,   KC_F4,   KC_F5,                     KC_F6,   KC_F7,   KC_F8,   KC_F9,   KC_F10,  KC_DEL,  \
     _______, _______, _______, _______, _______, _______,                   _______, _______, _______, _______, _______, _______, \
     _______, _______, _______, _______, _______, _______,                   KC_LEFT, KC_DOWN, KC_UP,   KC_RGHT, _______, _______, \
-    _______, _______, _______, _______, _______, _______, _______, _______, _______, KC_MINS, KC_EQL,  KC_LBRC, KC_RBRC, _______, \
+    _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, \
                                _______, _______, _______, _______, _______, _______, _______, _______\
   ),
   [_ADJUST] = LAYOUT( \
@@ -42,27 +42,56 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   )
 };
 
-const rgblight_segment_t PROGMEM my_lower_rgb_layer[] = RGBLIGHT_LAYER_SEGMENTS({0, 12, HSV_GREEN});
-const rgblight_segment_t PROGMEM my_raise_rgb_layer[] = RGBLIGHT_LAYER_SEGMENTS({0, 12, HSV_BLUE});
-const rgblight_segment_t PROGMEM my_adjust_rgb_layer[] = RGBLIGHT_LAYER_SEGMENTS({0, 12, HSV_RED});
-const rgblight_segment_t* const PROGMEM my_rgb_layers[] = RGBLIGHT_LAYERS_LIST(my_lower_rgb_layer, my_raise_rgb_layer, my_adjust_rgb_layer);
-
-void keyboard_post_init_user(void) {
-  // Enable the LED layers
-  rgblight_layers = my_rgb_layers;
-}
-
 layer_state_t layer_state_set_user(layer_state_t state) {
-  state = update_tri_layer_state(state, _LOWER, _RAISE, _ADJUST);
-  rgblight_set_layer_state(0, layer_state_cmp(state, _LOWER));
-  rgblight_set_layer_state(1, layer_state_cmp(state, _RAISE));
-  rgblight_set_layer_state(2, layer_state_cmp(state, _ADJUST));
-  return state;
+  return update_tri_layer_state(state, _LOWER, _RAISE, _ADJUST);
 }
 
 //SSD1306 OLED update loop, make sure to enable OLED_DRIVER_ENABLE=yes in rules.mk
 #ifdef OLED_DRIVER_ENABLE
+
+oled_rotation_t oled_init_user(oled_rotation_t rotation) {
+  if (!is_keyboard_master())
+    return OLED_ROTATION_180;  // flips the display 180 degrees if offhand
+  return rotation;
+}
+
+// When you add source files to SRC in rules.mk, you can use functions.
+const char *read_layer_state(void);
+const char *read_logo(void);
+//
+// void set_keylog(uint16_t keycode, keyrecord_t *record);
+// const char *read_keylog(void);
+// const char *read_keylogs(void);
+// const char *read_mode_icon(bool swap);
+// const char *read_host_led_state(void);
+// void set_timelog(void);
+// const char *read_timelog(void);
+
+void oled_task_user(void) {
+  if (is_keyboard_master()) {
+    // If you want to change the display of OLED, you need to change here
+    oled_write_ln(read_layer_state(), false);
+    //oled_write_ln(read_keylog(), false);
+    //oled_write_ln(read_keylogs(), false);
+    //oled_write_ln(read_mode_icon(keymap_config.swap_lalt_lgui), false);
+    //oled_write_ln(read_host_led_state(), false);
+    //oled_write_ln(read_timelog(), false);
+  } else {
+    oled_write(read_logo(), false);
+  }
+}
+
 void suspend_power_down_user(void) {
   oled_off();
 }
 #endif // OLED_DRIVER_ENABLE
+
+bool process_record_user(uint16_t keycode, keyrecord_t *record) {
+  if (record->event.pressed) {
+#ifdef OLED_DRIVER_ENABLE
+    // set_keylog(keycode, record);
+#endif
+    // set_timelog();
+  }
+  return true;
+}
