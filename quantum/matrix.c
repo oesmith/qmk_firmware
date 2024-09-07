@@ -53,7 +53,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #ifdef DIRECT_PINS
 static SPLIT_MUTABLE pin_t direct_pins[ROWS_PER_HAND][MATRIX_COLS] = DIRECT_PINS;
-#elif (DIODE_DIRECTION == ROW2COL) || (DIODE_DIRECTION == COL2ROW)
+#endif
+
+#if (DIODE_DIRECTION == ROW2COL) || (DIODE_DIRECTION == COL2ROW)
 #    ifdef MATRIX_ROW_PINS
 static SPLIT_MUTABLE_ROW pin_t row_pins[ROWS_PER_HAND] = MATRIX_ROW_PINS;
 #    endif // MATRIX_ROW_PINS
@@ -108,7 +110,7 @@ static inline uint8_t readMatrixPin(pin_t pin) {
 
 #ifdef DIRECT_PINS
 
-__attribute__((weak)) void matrix_init_pins(void) {
+__attribute__((weak)) void direct_init_pins(void) {
     for (int row = 0; row < ROWS_PER_HAND; row++) {
         for (int col = 0; col < MATRIX_COLS; col++) {
             pin_t pin = direct_pins[row][col];
@@ -119,7 +121,7 @@ __attribute__((weak)) void matrix_init_pins(void) {
     }
 }
 
-__attribute__((weak)) void matrix_read_cols_on_row(matrix_row_t current_matrix[], uint8_t current_row) {
+__attribute__((weak)) void direct_read_cols_on_row(matrix_row_t current_matrix[], uint8_t current_row) {
     // Start with a clear matrix row
     matrix_row_t current_row_value = 0;
 
@@ -130,10 +132,11 @@ __attribute__((weak)) void matrix_read_cols_on_row(matrix_row_t current_matrix[]
     }
 
     // Update the matrix
-    current_matrix[current_row] = current_row_value;
+    current_matrix[current_row] |= current_row_value;
 }
+#endif
 
-#elif defined(DIODE_DIRECTION)
+#ifdef DIODE_DIRECTION
 #    if defined(MATRIX_ROW_PINS) && defined(MATRIX_COL_PINS)
 #        if (DIODE_DIRECTION == COL2ROW)
 
@@ -195,7 +198,7 @@ __attribute__((weak)) void matrix_read_cols_on_row(matrix_row_t current_matrix[]
     matrix_output_unselect_delay(current_row, current_row_value != 0); // wait for all Col signals to go HIGH
 
     // Update the matrix
-    current_matrix[current_row] = current_row_value;
+    current_matrix[current_row] |= current_row_value;
 }
 
 #        elif (DIODE_DIRECTION == ROW2COL)
@@ -266,8 +269,10 @@ __attribute__((weak)) void matrix_read_rows_on_col(matrix_row_t current_matrix[]
 #            error DIODE_DIRECTION must be one of COL2ROW or ROW2COL!
 #        endif
 #    endif // defined(MATRIX_ROW_PINS) && defined(MATRIX_COL_PINS)
-#else
-#    error DIODE_DIRECTION is not defined!
+#endif
+
+#if !defined(DIRECT_PINS) && !defined(DIODE_DIRECTION)
+#    error At least one of [DIRECT_PINS, DIODE_DIRECTION] must be defined!
 #endif
 
 void matrix_init(void) {
@@ -301,7 +306,12 @@ void matrix_init(void) {
 #endif
 
     // initialize key pins
+#ifdef DIRECT_PINS
+    direct_init_pins();
+#endif
+#ifdef DIODE_DIRECTION
     matrix_init_pins();
+#endif
 
     // initialize matrix state: all keys off
     memset(matrix, 0, sizeof(matrix));
@@ -323,7 +333,13 @@ __attribute__((weak)) bool transport_master_if_connected(matrix_row_t master_mat
 uint8_t matrix_scan(void) {
     matrix_row_t curr_matrix[MATRIX_ROWS] = {0};
 
-#if defined(DIRECT_PINS) || (DIODE_DIRECTION == COL2ROW)
+#if defined(DIRECT_PINS)
+    for (uint8_t current_row = 0; current_row < ROWS_PER_HAND; current_row++) {
+        direct_read_cols_on_row(curr_matrix, current_row);
+    }
+#endif
+
+#if (DIODE_DIRECTION == COL2ROW)
     // Set row, read cols
     for (uint8_t current_row = 0; current_row < ROWS_PER_HAND; current_row++) {
         matrix_read_cols_on_row(curr_matrix, current_row);
