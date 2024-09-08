@@ -15,11 +15,7 @@
     },
     "backlight": {
       "pin": "A8",
-      "max_brightness": 255,
-      "default": {
-        "on": false,
-        "breathing": false
-      }
+      "levels": 3
     },
     "matrix_pins": {
       "rows": ["NO_PIN", "NO_PIN", "NO_PIN", "A0", "A1", "A2", "A3", "A4", "A5", "A6", "A7"],
