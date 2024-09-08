@@ -10,12 +10,19 @@
         "command": false,
         "console": true,
         "extrakey": true,
+        "joystick": true,
         "mousekey": true,
-        "nkro": true
+        "nkro": true,
+        "pointing_device": true
     },
     "backlight": {
       "pin": "A8",
       "levels": 3
+    },
+    "joystick": {
+      "button_count": 6,
+      "axes": {},
+      "driver": "digital"
     },
     "matrix_pins": {
       "rows": ["NO_PIN", "NO_PIN", "NO_PIN", "A0", "A1", "A2", "A3", "A4", "A5", "A6", "A7"],

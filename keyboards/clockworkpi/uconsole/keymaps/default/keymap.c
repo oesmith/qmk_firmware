@@ -16,11 +16,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
      */
     [LY0] = LAYOUT(
         // TODO: Get the joystick device working (last four keys of first row).
-        KC_UP,   KC_DOWN, KC_LEFT, KC_RGHT, KC_NO,   KC_NO,   KC_NO,   KC_NO,
+        KC_UP,   KC_DOWN, KC_LEFT, KC_RGHT, JS_0,    JS_1,    JS_2,    JS_3,
         KC_LSFT, KC_RSFT, KC_LCTL, KC_RCTL, KC_LALT, MS_BTN1, KC_RALT, MS_BTN2,
         MS_BTN3, KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,
 
-        KC_NO,   KC_NO,   KC_VOLU, KC_GRV,  KC_LBRC, KC_RBRC, KC_MINS, KC_EQL,
+        JS_4,    JS_5,    KC_VOLU, KC_GRV,  KC_LBRC, KC_RBRC, KC_MINS, KC_EQL,
         KC_1,    KC_2,    KC_3,    KC_4,    KC_5,    KC_6,    KC_7,    KC_8,
         KC_9,    KC_0,    KC_ESC,  KC_TAB,  KC_NO,   KC_NO,   KC_NO,   KC_NO,
         KC_Q,    KC_W,    KC_E,    KC_R,    KC_T,    KC_Y,    KC_U,    KC_I,
