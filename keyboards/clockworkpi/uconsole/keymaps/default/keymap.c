@@ -31,9 +31,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     ),
 
     [LY1] = LAYOUT(
-        // TODO: Switch these first four keys to page up/down, home and end
-        // after I get the trackball working.
-        MS_UP,   MS_DOWN, MS_LEFT, MS_RGHT, _______, _______, _______, _______,
+        KC_PGUP, KC_PGDN, KC_HOME, KC_END,  _______, _______, _______, _______,
         _______, _______, _______, _______, KC_LGUI, _______, KC_RGUI, _______,
         _______, _______, _______, _______, _______, _______, _______, _______,
 
