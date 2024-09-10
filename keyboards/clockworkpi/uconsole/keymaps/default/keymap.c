@@ -5,7 +5,15 @@
 
 enum {
   LY0 = 0,
-  LY1
+  LY1,
+  LY2
+};
+
+enum {
+  JS_LEFT = SAFE_RANGE,
+  JS_RGHT,
+  JS_UP,
+  JS_DOWN
 };
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
@@ -15,7 +23,6 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
      * └───┴───┴───┴───┴───┴───┴───┴───┴───┴───┴───┴───┴───┴───┴───┴───┴───┘
      */
     [LY0] = LAYOUT(
-        // TODO: Get the joystick device working (last four keys of first row).
         KC_UP,   KC_DOWN, KC_LEFT, KC_RGHT, JS_0,    JS_1,    JS_2,    JS_3,
         KC_LSFT, KC_RSFT, KC_LCTL, KC_RCTL, KC_LALT, MS_BTN1, KC_RALT, MS_BTN2,
         MS_BTN3, KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,
@@ -39,9 +46,44 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         KC_F1,   KC_F2,   KC_F3,   KC_F4,   KC_F5,   KC_F6,   KC_F7,   KC_F8,
         KC_F9,   KC_F10,  QK_BOOT, KC_CAPS, _______, _______, _______, _______,
         _______, _______, _______, _______, _______, _______, KC_PGUP, KC_INS,
-        _______, _______, _______, _______, _______, _______, _______, KC_HOME,
+        _______, _______, _______, _______, _______, _______, TG(LY2), KC_HOME,
         KC_END,  KC_PGDN, _______, _______, _______, _______, _______, _______,
         _______, _______, KC_BRID, KC_BRIU, _______, _______, _______, _______,
         KC_DEL,  _______, _______, _______, BL_STEP, _______, _______, _______
     ),
+
+    // Gamepad mode, where the arrow keys change to be d-pad buttons.
+    [LY2] = LAYOUT(
+        JS_LEFT, JS_RGHT, JS_UP,   JS_DOWN, _______, _______, _______, _______,
+        _______, _______, _______, _______, _______, _______, _______, _______,
+        _______, _______, _______, _______, _______, _______, _______, _______,
+
+        _______, _______, _______, _______, _______, _______, _______, _______,
+        _______, _______, _______, _______, _______, _______, _______, _______,
+        _______, _______, _______, _______, _______, _______, _______, _______,
+        _______, _______, _______, _______, _______, _______, _______, _______,
+        _______, _______, _______, _______, _______, _______, _______, _______,
+        _______, _______, _______, _______, _______, _______, _______, _______,
+        _______, _______, _______, _______, _______, _______, _______, _______,
+        _______, _______, _______, _______, _______, _______, _______, _______
+    ),
 };
+
+bool process_record_user(uint16_t keycode, keyrecord_t *record) {
+  switch (keycode) {
+    case JS_LEFT:
+      joystick_set_axis(1, record->event.pressed ? -127 : 0);
+      return false;
+    case JS_RGHT:
+      joystick_set_axis(1, record->event.pressed ? 127 : 0);
+      return false;
+    case JS_UP:
+      joystick_set_axis(0, record->event.pressed ? -127 : 0);
+      return false;
+    case JS_DOWN:
+      joystick_set_axis(0, record->event.pressed ? 127 : 0);
+      return false;
+    default:
+      return true;
+  }
+}

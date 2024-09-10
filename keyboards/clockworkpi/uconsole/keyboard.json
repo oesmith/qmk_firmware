@@ -21,7 +21,11 @@
     },
     "joystick": {
       "button_count": 6,
-      "axes": {},
+      "axis_resolution": 8,
+      "axes": {
+        "x": "virtual",
+        "y": "virtual"
+      },
       "driver": "digital"
     },
     "matrix_pins": {
