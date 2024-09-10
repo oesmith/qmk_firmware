@@ -11,6 +11,7 @@
         "console": true,
         "extrakey": true,
         "joystick": true,
+        "key_override": true,
         "mousekey": true,
         "nkro": true,
         "pointing_device": true
