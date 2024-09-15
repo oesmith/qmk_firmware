@@ -21,6 +21,9 @@
       "pin": "A8",
       "levels": 3
     },
+    "build": {
+        "debounce_type": "asym_eager_defer_pk"
+    },
     "joystick": {
       "button_count": 6,
       "axis_resolution": 8,
