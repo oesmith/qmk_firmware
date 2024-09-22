@@ -13,7 +13,8 @@ enum {
   JS_LEFT = SAFE_RANGE,
   JS_RGHT,
   JS_UP,
-  JS_DOWN
+  JS_DOWN,
+  KB_LOCK
 };
 
 const key_override_t vol_key_override =
@@ -52,7 +53,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
         KC_PSCR, KC_PAUS, KC_MUTE, _______, _______, _______, KC_F11,  KC_F12,
         KC_F1,   KC_F2,   KC_F3,   KC_F4,   KC_F5,   KC_F6,   KC_F7,   KC_F8,
-        KC_F9,   KC_F10,  _______, KC_CAPS, _______, _______, _______, _______,
+        KC_F9,   KC_F10,  KB_LOCK, KC_CAPS, _______, _______, _______, _______,
         _______, _______, _______, _______, _______, _______, KC_PGUP, KC_INS,
         _______, _______, _______, _______, _______, _______, TG(LY2), KC_HOME,
         KC_END,  KC_PGDN, _______, _______, _______, _______, _______, _______,
@@ -77,8 +78,18 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     ),
 };
 
+static bool is_locked = false;
+
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
+  if (is_locked && keycode != KB_LOCK && keycode != MO(LY1)) {
+    return false;
+  }
   switch (keycode) {
+    case KB_LOCK:
+      if (record->event.pressed) {
+        is_locked = !is_locked;
+      }
+      return false;
     case JS_LEFT:
       joystick_set_axis(1, record->event.pressed ? -127 : 0);
       return false;
