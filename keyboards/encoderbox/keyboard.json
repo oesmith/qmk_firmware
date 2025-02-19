@@ -1,0 +1,49 @@
+{
+    "manufacturer": "Olly Smith",
+    "keyboard_name": "encoderbox",
+    "maintainer": "Olly Smith",
+    "bootloader": "rp2040",
+    "processor": "RP2040",
+    "diode_direction": "COL2ROW",
+    "features": {
+        "bootmagic": true,
+        "command": false,
+        "console": false,
+        "encoder": true,
+        "joystick": true
+    },
+    "matrix_pins": {
+        "direct": [
+            ["GP2", "GP13", "GP6", "GP10"]
+        ]
+    },
+    "url": "",
+    "usb": {
+        "device_version": "1.0.0",
+        "pid": "0x0000",
+        "vid": "0xFEED"
+    },
+    "layouts": {
+        "LAYOUT": {
+            "layout": [
+                {"matrix": [0, 0], "x": 0, "y": 0},
+                {"matrix": [0, 1], "x": 1, "y": 0},
+                {"matrix": [0, 2], "x": 2, "y": 0},
+                {"matrix": [0, 3], "x": 3, "y": 0}
+            ]
+        }
+    },
+    "encoder": {
+        "enabled": true,
+        "rotary": [
+            { "pin_a": "GP4",  "pin_b": "GP3",  "resolution": 4 },
+            { "pin_a": "GP15", "pin_b": "GP14", "resolution": 4 },
+            { "pin_a": "GP8",  "pin_b": "GP7",  "resolution": 4 },
+            { "pin_a": "GP12", "pin_b": "GP11", "resolution": 4 }
+        ]
+    },
+    "joystick": {
+        "button_count": 12,
+        "axes":{}
+    }
+}
